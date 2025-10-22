@@ -1,0 +1,3 @@
+C:/Sem3_Uni/Betriebssysteme/Uebung0/cmake-build-debug/CMakeFiles/Uebung0.dir
+C:/Sem3_Uni/Betriebssysteme/Uebung0/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Sem3_Uni/Betriebssysteme/Uebung0/cmake-build-debug/CMakeFiles/rebuild_cache.dir
