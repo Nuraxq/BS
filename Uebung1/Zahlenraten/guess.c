@@ -1,5 +1,6 @@
 #include "guessing.h"
 
+
 unsigned int guess_the_number(void)
 {
 	unsigned int upper = 100000;
@@ -18,5 +19,6 @@ unsigned int guess_the_number(void)
 			return mid;
 		}
 	}
-	return 1; // Return the correct number
+	return 1; // falls zahl nicht gefunden wird -
 }
+
