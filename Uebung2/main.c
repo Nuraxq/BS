@@ -29,8 +29,10 @@ int main(void){
         perror("getpwuid");
         exit(EXIT_FAILURE);
     }
+    // usernamen in Buffer kopieren, (muss eigl nicht)
     strncpy(username,pass->pw_name,BUFFERSIZE);
 
+    // Pfadnamen holen
     char path[PATH_MAX];
     while(getcwd(path,BUFFERSIZE) == NULL){
         if(errno == EINTR) continue;
@@ -45,13 +47,17 @@ int main(void){
         printf("%s@%s %s$ ",username,hostname,path);
         char befehl[BUFFERSIZE];
         char argument[BUFFERSIZE];
-
+    
         if(scanf("%511s %511s",befehl,argument) < 2){
             puts("Fehler bei Scanf");
             return 1;
         }
         printf("Befehl: %s\n",befehl);
         printf("Argument: %s\n",argument);
+
+        execlp(befehl,befehl,argument, (char*)NULL);
+        perror("execlp");
+        return 1;
     }
     return 0;
 }
