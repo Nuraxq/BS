@@ -70,7 +70,8 @@ int main(void){
             // Wir lesen genau 1 Befehl mit genau 1 Argument ein
             if(sscanf(token,"%511s %511s",befehl,argument) < 2){
                 puts("Usage: <Befehl> <Argument> (&& <Befehl <Argument> && ...)");
-                return 1;
+                token = NULL;
+                continue;
             }
 
             // neuen Prozess erzeugen
