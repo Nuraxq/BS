@@ -109,7 +109,7 @@ int main(void){
                     }
                 }
             }
-            
+            // --- Bearbeitung des Elternprozesses zuende --- // 
         }
     }
     return 0;
