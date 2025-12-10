@@ -6,13 +6,22 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <signal.h>
 
 sem_t* from;
 sem_t* priority;
 
+volatile sig_atomic_t stop = 0;
+
+void handle_sigint(int sig){
+    stop = 1;
+}
+
+
 int main(int argc, char * argv[]){
     srand(getpid());
 
+    printf("Anzahl Argumente:%d \n",argc);
     pid_t id = getpid();
 
     char comingFrom[32];
@@ -36,24 +45,39 @@ int main(int argc, char * argv[]){
         perror("sem_open");
         exit(EXIT_FAILURE);
     } 
+    
+    // Sigaction setzen
+    struct sigaction sa;
+    sa.sa_handler = handle_sigint;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    if (sigaction(SIGINT,&sa,NULL) == -1){
+        perror("sigaction");
+        exit(EXIT_FAILURE);
+    }
 
-    while (true){
-        printf("Käfer %d: Ich komme von: %s\n",id,argv[1]);
+    while (!stop){
+        printf("Käfer %d: Komme von %s\n",id,argv[1]);
         
 
         int status = sem_wait(from);
         if (status == -1){
+            if(stop) {break;}
             perror("sem_wait");
             exit(EXIT_FAILURE);
         }
-        usleep(10 + 30 * (rand() % 100));
-        printf("Käfer %d: Ich überprüfe ob %s frei ist\n",id,argv[2]);
+        usleep(1000 + 92* (rand() % 100)); // es passiert entweder nie oder immer ein deadlock // zeit ist doof 
+        printf("Käfer %d: Teste ob %s frei ist\n",id,argv[2]);
         int status2 = sem_wait(priority);
         if (status2 == -1){
+            if(stop){
+                sem_post(from);
+                break;
+            }
             perror("sem_wait");
             exit(EXIT_FAILURE);
         }
-        printf("Käfer %d: Ich habe die Kreuzung überquert! (Gekommen von: %s)\n",id,argv[1]);
+        printf("Käfer %d: Ich bin drüber! (Kam von %s)\n",id,argv[1]);
         sleep(1);
 
         sem_post(from);
